@@ -1,4 +1,9 @@
-﻿namespace Rayman2Lib
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+namespace Rayman2Lib
 {
     public class BNMFile
     {
