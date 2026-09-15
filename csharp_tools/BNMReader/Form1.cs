@@ -1,26 +1,19 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Windows.Forms;
+﻿using Modern.Forms;
 using Rayman2Lib;
-namespace BNKReader
-{
-    public partial class Form1 : Form
-    {
-        public Form1()
-        {
+using System.Diagnostics;
+namespace BNKReader {
+    public partial class Form1 : Form {
+        public Form1() {
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
+        private void Form1_Load(object sender, EventArgs e) {
 
         }
 
-        private void decodeButton_Click(object sender, EventArgs e)
-        {
-            openFileDialog1.Multiselect = true;
-            if (openFileDialog1.ShowDialog() == DialogResult.OK) {
+        private void decodeButton_Click(object sender, EventArgs e) {
+            openFileDialog1.AllowMultiple = true;
+            if (openFileDialog1.ShowDialog(this).Result == DialogResult.OK) {
                 string dir = "";
                 foreach (var fileName in openFileDialog1.FileNames) {
                     if (File.Exists(fileName)) {
