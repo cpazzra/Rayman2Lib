@@ -1,7 +1,7 @@
 ﻿using Modern.Forms;
 namespace BNKReader
 {
-    partial class Form1
+    partial class BNMReaderMainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -29,7 +29,7 @@ namespace BNKReader
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BNMReaderMainForm));
             this.label1 = new Label();
             this.decodeButton = new Button();
             this.addIndexCheckBox = new CheckBox();
@@ -90,6 +90,26 @@ namespace BNKReader
             // this.ResumeLayout(false);
             // this.PerformLayout();
 
+            this.repackButton = new Button();
+            this.folderBrowserDialog1 = new FolderBrowserDialog();
+            this.saveFileDialog1 = new SaveFileDialog();
+
+            // repackButton
+            this.repackButton.Anchor = ((AnchorStyles)(((AnchorStyles.Bottom | AnchorStyles.Left) | AnchorStyles.Right)));
+            this.repackButton.Location = new System.Drawing.Point(12, 120); // Positioned below the checkbox
+            this.repackButton.Name = "repackButton";
+            this.repackButton.Size = new System.Drawing.Size(345, 23);
+            this.repackButton.TabIndex = 5;
+            this.repackButton.Text = "Repack .bnm";
+            this.repackButton.Click += (sender, args) => this.repackButton_Click(sender, args);
+
+            // saveFileDialog1
+            this.saveFileDialog1.AddFilter("Sound bank",".bnm");
+
+            this.Controls.Add(this.repackButton);
+            // Adjust Form ClientSize to accommodate the new button
+            this.Size = new System.Drawing.Size(369, 155); 
+
         }
 
         #endregion
@@ -98,6 +118,9 @@ namespace BNKReader
         private Button decodeButton;
         private CheckBox addIndexCheckBox;
         private OpenFileDialog openFileDialog1;
+        private Button repackButton;
+        private FolderBrowserDialog folderBrowserDialog1;
+        private SaveFileDialog saveFileDialog1;
     }
 }
 

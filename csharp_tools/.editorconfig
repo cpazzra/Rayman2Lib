@@ -3,28 +3,18 @@
 
 # Microsoft .NET properties
 csharp_indent_braces = false
-csharp_new_line_before_catch = true
-csharp_new_line_before_else = true
-csharp_new_line_before_open_brace = all
-csharp_preferred_modifier_order = public, internal, protected, private, file, static, abstract, sealed, new, override, safe, extern, virtual, closed, async, unsafe, volatile, required, readonly:suggestion
+csharp_new_line_before_open_brace = anonymous_methods,control_blocks,events,indexers,lambdas,local_functions,methods,properties,types
+csharp_preferred_modifier_order = protected, internal, public, private, file, static, abstract, override, new, sealed, safe, extern, virtual, closed, async, unsafe, volatile, required, readonly:suggestion
 csharp_style_namespace_declarations = block_scoped:suggestion
 csharp_style_var_for_built_in_types = false:suggestion
-dotnet_sort_system_directives_first = true
+dotnet_style_require_accessibility_modifiers = omit_if_default:suggestion
 
 # ReSharper properties
-resharper_accessor_owner_body = expression_body
+resharper_blank_lines_after_control_transfer_statements = 1
+resharper_blank_lines_after_start_comment = 0
 resharper_blank_lines_around_invocable = 1
-resharper_blank_lines_around_property = 1
-resharper_blank_lines_around_region = 1
 resharper_braces_for_for = not_required
-resharper_braces_for_foreach = not_required
-resharper_braces_for_while = required_for_multiline
-resharper_csharp_max_line_length = 238
-resharper_default_internal_modifier = implicit
 resharper_indent_nested_for_stmt = true
 resharper_new_line_before_while = true
 resharper_object_creation_when_type_evident = explicitly_typed
-resharper_place_expr_property_on_single_line = true
-resharper_remove_blank_lines_near_braces_in_declarations = true
-resharper_space_within_empty_braces = true
-resharper_wrap_chained_binary_expressions = chop_if_long
+resharper_place_type_attribute_on_same_line = true

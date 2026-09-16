@@ -18,10 +18,19 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="bin\Release\net10.0\Rayman2Lib.deps.json" />
-      <Content Include="bin\Release\net10.0\Rayman2Lib.dll" />
-      <Content Include="bin\Release\net10.0\Rayman2Lib.pdb" />
-      <Content Include="bin\Release\Rayman2Lib.1.0.0.nupkg" />
+      <Folder Include="bin\Release\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Compile Remove="bin\Release\net10.0\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <EmbeddedResource Remove="bin\Release\net10.0\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Remove="bin\Release\net10.0\**" />
     </ItemGroup>
 
 </Project>
