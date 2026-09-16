@@ -1,4 +1,5 @@
 ﻿using Modern.Forms;
+using SkiaSharp;
 namespace BNKReader
 {
     partial class BNMReaderMainForm
@@ -22,11 +23,7 @@ namespace BNKReader
         }
 
         #region Windows Form Designer generated code
-
-        /// <summary>
-        /// Required method for Designer support - do not modify
-        /// the contents of this method with the code editor.
-        /// </summary>
+        
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BNMReaderMainForm));
@@ -34,7 +31,6 @@ namespace BNKReader
             this.decodeButton = new Button();
             this.addIndexCheckBox = new CheckBox();
             this.openFileDialog1 = new OpenFileDialog();
-            // this.SuspendLayout();
             // 
             // label1
             // 
@@ -50,8 +46,7 @@ namespace BNKReader
             // 
             // decodeButton
             // 
-            this.decodeButton.Anchor = ((AnchorStyles)(((AnchorStyles.Bottom | AnchorStyles.Left) 
-            | AnchorStyles.Right)));
+            this.decodeButton.Anchor = ((AnchorStyles)(((AnchorStyles.Bottom | AnchorStyles.Left) | AnchorStyles.Right)));
             this.decodeButton.Location = new System.Drawing.Point(12, 63);
             this.decodeButton.Name = "decodeButton";
             this.decodeButton.Size = new System.Drawing.Size(345, 23);
@@ -68,27 +63,20 @@ namespace BNKReader
             this.addIndexCheckBox.Name = "addIndexCheckBox";
             this.addIndexCheckBox.Size = new System.Drawing.Size(130, 17);
             this.addIndexCheckBox.TabIndex = 4;
+            // TODO: Not sure how to set font color here... Seems to be defaulting to white text on white background.
             this.addIndexCheckBox.Text = "Add index to file name";
             // 
             // openFileDialog1
             // 
-            // this.openFileDialog1.Filter = "Sound bank|*.bnm";
+            this.openFileDialog1.AddFilter("Sound bank","*.bnm");
+            
             // 
-            // Form1
+            // BNMReaderMainForm
             // 
-            // this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            // this.AutoScaleMode = AutoScaleMode.Font;
-            // this.ClientSize = new System.Drawing.Size(369, 121);
             this.Controls.Add(this.addIndexCheckBox);
             this.Controls.Add(this.decodeButton);
             this.Controls.Add(this.label1);
-            // this.FormBorderStyle = FormBorderStyle.FixedSingle;
-            // this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            // this.Name = "Form1";
             this.Text = "Sound Bank Extractor";
-            // this.Load += new System.EventHandler(this.Form1_Load);
-            // this.ResumeLayout(false);
-            // this.PerformLayout();
 
             this.repackButton = new Button();
             this.folderBrowserDialog1 = new FolderBrowserDialog();
@@ -96,7 +84,7 @@ namespace BNKReader
 
             // repackButton
             this.repackButton.Anchor = ((AnchorStyles)(((AnchorStyles.Bottom | AnchorStyles.Left) | AnchorStyles.Right)));
-            this.repackButton.Location = new System.Drawing.Point(12, 120); // Positioned below the checkbox
+            this.repackButton.Location = new System.Drawing.Point(12, 120);
             this.repackButton.Name = "repackButton";
             this.repackButton.Size = new System.Drawing.Size(345, 23);
             this.repackButton.TabIndex = 5;
@@ -107,7 +95,6 @@ namespace BNKReader
             this.saveFileDialog1.AddFilter("Sound bank",".bnm");
 
             this.Controls.Add(this.repackButton);
-            // Adjust Form ClientSize to accommodate the new button
             this.Size = new System.Drawing.Size(369, 155); 
 
         }

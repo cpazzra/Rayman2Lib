@@ -10,29 +10,14 @@ namespace Rayman2Lib
             public int length;
             public byte[] data;
 
-            public ushort channels;
-            public ushort bitsPerSample;
-            public ushort blockAlign;
-            public int byteRate;
-
-            public int FileListOffset;
-            public int LengthFieldOffset;
-
-            public void PrintInfo()
-            {
-                Console.WriteLine(
-                    $"Name: {name}\n" +
-                    $"  Sample rate: {sampleRate} Hz\n" +
-                    $"  Channels: {channels}\n" +
-                    $"  Bits per sample: {bitsPerSample}\n" +
-                    $"  Block alignment: {blockAlign} bytes\n" +
-                    $"  Byte rate: {byteRate} bytes/sec\n" +
-                    $"  Raw data length: {data.Length} bytes");
-            }
+            public int fileListOffset;
+            public int lengthFieldOffset;
 
             public void Save(Stream stream)
             {
+                // Oftens shows as 22.1khz in OS descriptions 
                 uint numsamples = 22050;
+                // Mono audio
                 ushort numchannels = 1;
                 ushort samplelength = 1;
 
@@ -41,8 +26,10 @@ namespace Rayman2Lib
                 wr.Write(Encoding.ASCII.GetBytes("RIFF"));
                 wr.Write(36 + data.Length);
                 wr.Write(Encoding.ASCII.GetBytes("WAVEfmt "));
+                // 16-bit pcm formatting (default for audacity)
                 wr.Write(16);
                 wr.Write((ushort)1);
+
                 wr.Write(numchannels);
                 wr.Write(sampleRate);
                 wr.Write(sampleRate * samplelength * numchannels);
@@ -55,39 +42,33 @@ namespace Rayman2Lib
             }
         }
 
-        private byte[] _header;
-        private byte[] _fileList;
-        public List<SoundFile> soundFiles = new List<SoundFile>();
+        readonly byte[] header;
+        readonly byte[] fileList;
+        public List<SoundFile> soundFiles = [];
 
         public BNMFile(byte[] data)
         {
             using var stream = new MemoryStream(data);
             using var r = new BinaryReader(stream);
 
-            // Preserve the first 44 bytes as the header template
-            _header = r.ReadBytes(44);
+            header = r.ReadBytes(44);
 
-            // Use the header to determine the file list size
-            // size1 is at offset 20 (0x14)
-            int size1 = BitConverter.ToInt32(_header, 20);
-            int size2 = BitConverter.ToInt32(_header, 24);
+            int eventCount = BitConverter.ToInt32(header, 8);
+            int fileCount = BitConverter.ToInt32(header, 16);
+            int fileListEndOffset = BitConverter.ToInt32(header, 20);
+            int audioDataOffset = BitConverter.ToInt32(header, 24);
 
-            _fileList = r.ReadBytes(size1 - 44);
-
-            // Skip to the start of the audio data section
-            int dataPos = size1;
-            if (size2 - size1 > 0)
+            int dataPos = fileListEndOffset;
+            if (audioDataOffset - fileListEndOffset > 0)
             {
-                stream.Seek(size2, SeekOrigin.Begin);
+                stream.Seek(audioDataOffset, SeekOrigin.Begin);
             } else
             {
                 stream.Seek(dataPos, SeekOrigin.Begin);
             }
 
-            // Parse the file list to map sounds
-            using var mr = new BinaryReader(new MemoryStream(_fileList));
-            int eventCount = BitConverter.ToInt32(_header, 8);
-            int fileCount = BitConverter.ToInt32(_header, 16);
+            fileList = r.ReadBytes(fileListEndOffset - 44);
+            using var mr = new BinaryReader(new MemoryStream(fileList));
 
             if (eventCount > 0)
             {
@@ -131,8 +112,8 @@ namespace Rayman2Lib
                             name = name,
                             sampleRate = sampleRate,
                             length = length,
-                            FileListOffset = currentEntryOffset,
-                            LengthFieldOffset = lengthOffset,
+                            fileListOffset = currentEntryOffset,
+                            lengthFieldOffset = lengthOffset,
                             data = r.ReadBytes(length)
                         });
                     }
@@ -140,91 +121,14 @@ namespace Rayman2Lib
             }
         }
 
-        // public BNMFile(byte[] data)
-        // {
-        //     using var stream = new MemoryStream(data);
-        //     using var r = new BinaryReader(stream);
-        //
-        //     // 1. Preserve Header
-        //     _header = r.ReadBytes(44);
-        //
-        //     int size1 = BitConverter.ToInt32(_header, 20); // Offset to end of File List
-        //     int size2 = BitConverter.ToInt32(_header, 24); // Total File Size
-        //
-        //     // 2. Read File List
-        //     _fileList = r.ReadBytes(size1 - 44);
-        //
-        //     // 3. Position stream for audio data
-        //     // The audio data starts immediately after the file list (at size1).
-        //     // We seek to size1 to ensure we are at the start of the audio block,
-        //     // regardless of any previous reads.
-        //     stream.Seek(size1, SeekOrigin.Begin);
-        //
-        //     // 4. Parse File List to index sounds
-        //     using var mr = new BinaryReader(new MemoryStream(_fileList));
-        //     int eventCount = BitConverter.ToInt32(_header, 8);
-        //     int fileCount = BitConverter.ToInt32(_header, 16);
-        //
-        //     if (eventCount > 0)
-        //     {
-        //         for (int i = 0; i < eventCount; i++) mr.ReadBytes(32);
-        //     }
-        //
-        //     if (fileCount > 0)
-        //     {
-        //         for (int i = 0; i < fileCount; i++)
-        //         {
-        //             int currentEntryOffset = (int)mr.BaseStream.Position;
-        //
-        //             var id = mr.ReadByte();
-        //             mr.ReadBytes(3);
-        //             int type = mr.ReadInt32();
-        //             mr.ReadBytes(4);
-        //
-        //             int lengthOffset = (int)mr.BaseStream.Position;
-        //             int length = mr.ReadInt32();
-        //
-        //             if (type == 0xA)
-        //             {
-        //                 length = mr.ReadInt32();
-        //                 mr.ReadBytes(40);
-        //             } else
-        //             {
-        //                 mr.ReadBytes(44);
-        //             }
-        //
-        //             var sampleRate = mr.ReadInt32();
-        //             mr.ReadBytes(8);
-        //             var nameBytes = mr.ReadBytes(20);
-        //             var name = Encoding.ASCII.GetString(nameBytes).Split('\0')[0];
-        //
-        //             if (name.Length == 0) name = "UNKNOWN_TYPE";
-        //             if (name.Contains(".apm")) length = 0;
-        //
-        //             if (type == 1 && !soundFiles.Any(f => f.name == name))
-        //             {
-        //                 // Read the actual audio data from the main stream 'r'
-        //                 // Since we seeked to size1, this will now read the correct bytes.
-        //                 soundFiles.Add(new SoundFile {
-        //                     name = name,
-        //                     sampleRate = sampleRate,
-        //                     length = length,
-        //                     FileListOffset = currentEntryOffset,
-        //                     LengthFieldOffset = lengthOffset,
-        //                     data = r.ReadBytes(length)
-        //                 });
-        //             }
-        //         }
-        //     }
-        // }
-
         /// <summary>
         /// Rebuilds the BNM file. 
         /// replacementFiles: Dictionary where key is sound name and value is path to replacement .wav
+        /// TODO: Odds are, does not account for .apm files. Likely requires extra parsing to get working correctly.
         /// </summary>
-        public byte[] SaveBNM(Dictionary<string, string> replacementFiles = null)
+        public byte[] SaveBNM(Dictionary<string, string?> replacementFiles = null)
         {
-            var updatedFileList = (byte[])_fileList.Clone();
+            var updatedFileList = (byte[])fileList.Clone();
             var audioDataStream = new MemoryStream();
 
             foreach (var sound in soundFiles)
@@ -232,29 +136,21 @@ namespace Rayman2Lib
                 byte[] finalData = sound.data;
 
                 if (replacementFiles != null &&
-                    replacementFiles.TryGetValue(sound.name, out string wavPath))
+                    replacementFiles.TryGetValue(sound.name, out string? wavPath))
                 {
-                    finalData = ExtractRawPcmFromWav(wavPath);
-
-                    Console.WriteLine(
-                        $"Replacement: {wavPath}, extracted {finalData.Length} bytes");
+                    finalData = ExtractRawPCMDataFromWAV(wavPath);
+                    Console.WriteLine($"Replacement: {wavPath}, extracted {finalData.Length} bytes");
                 }
 
-                Console.WriteLine(
-                    $"BNM entry: {sound.name}, original {sound.data.Length} bytes, " +
-                    $"final {finalData.Length} bytes");
+                Console.WriteLine($"BNM entry: {sound.name}, original {sound.data.Length} bytes, final {finalData.Length} bytes");
 
-
-                // Update the length in the file list binary
                 byte[] lenBytes = BitConverter.GetBytes(finalData.Length);
-                Buffer.BlockCopy(lenBytes, 0, updatedFileList, sound.LengthFieldOffset, 4);
-
+                Buffer.BlockCopy(lenBytes, 0, updatedFileList, sound.lengthFieldOffset, 4);
                 audioDataStream.Write(finalData, 0, finalData.Length);
             }
 
             // Update Header size fields
-            byte[] updatedHeader = (byte[])_header.Clone();
-            // int totalSize = 44 + updatedFileList.Length + (int)audioDataStream.Length;
+            byte[] updatedHeader = (byte[])header.Clone();
 
             int fileListEnd = 44 + updatedFileList.Length;
             int audioLength = checked((int)audioDataStream.Length);
@@ -288,22 +184,24 @@ namespace Rayman2Lib
             return finalStream.ToArray();
         }
 
-        private byte[] ExtractRawPcmFromWav(string path)
+        private static byte[] ExtractRawPCMDataFromWAV(string path)
         {
             using var fs = File.OpenRead(path);
             using var reader = new BinaryReader(fs, Encoding.ASCII, leaveOpen: false);
 
-            // RIFF
+            // Don't understand details of this header completely, but need to skip over when parsing WAV file.
+            // Perform checks on wav header anyway.
             string riffId = Encoding.ASCII.GetString(reader.ReadBytes(4));
             if (riffId != "RIFF")
-                throw new InvalidDataException("Not a RIFF file.");
+            {
+                throw new InvalidDataException("WAV missing root chunk.");
+            }
 
-            uint riffSize = reader.ReadUInt32();
-
-            // WAVE
             string waveId = Encoding.ASCII.GetString(reader.ReadBytes(4));
             if (waveId != "WAVE")
-                throw new InvalidDataException("Not a WAVE file.");
+            {
+                throw new InvalidDataException("WAV missing RIFF type");
+            }
 
             while (fs.Position + 8 <= fs.Length)
             {
@@ -311,15 +209,16 @@ namespace Rayman2Lib
                 uint chunkSize = reader.ReadUInt32();
 
                 if (chunkSize > fs.Length - fs.Position)
-                    throw new InvalidDataException(
-                        $"Invalid {chunkId} chunk size: {chunkSize}.");
+                {
+                    throw new InvalidDataException($"Invalid {chunkId} chunk size: {chunkSize}.");
+                }
 
+                // Actual PCM data chunk
                 if (chunkId == "data")
                 {
                     return reader.ReadBytes(checked((int)chunkSize));
                 }
-
-                // RIFF chunks are word-aligned. Skip a padding byte for odd sizes.
+                // Skip a padding byte for odd sizes
                 fs.Seek(chunkSize + (chunkSize & 1), SeekOrigin.Current);
             }
 

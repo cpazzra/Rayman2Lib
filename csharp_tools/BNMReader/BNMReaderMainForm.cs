@@ -53,19 +53,15 @@ namespace BNKReader
 
         private void repackButton_Click(object sender, EventArgs e)
         {
-            // 1. Select the original .bnm to use as a template
             openFileDialog1.Title = "Select Original .bnm Template";
             if (openFileDialog1.ShowDialog(this).Result != DialogResult.OK) return;
 
             string bnmTemplatePath = openFileDialog1.FileName;
-
-            // 2. Select the folder containing the .wav files
             folderBrowserDialog1.Title = "Select folder containing extracted .wav files";
             if (folderBrowserDialog1.ShowDialog(this).Result != DialogResult.OK) return;
 
             string wavFolder = folderBrowserDialog1.SelectedPath;
-
-            // 3. Select the destination for the new .bnm
+            saveFileDialog1.Title = "Select output destination for repacked bnm";
             saveFileDialog1.FileName = Path.GetFileName(bnmTemplatePath).Replace(".bnm", "_repacked.bnm");
             if (saveFileDialog1.ShowDialog(this).Result != DialogResult.OK) return;
 
@@ -73,24 +69,18 @@ namespace BNKReader
 
             try
             {
-                // Load the template
                 BNMFile bnm = new BNMFile(File.ReadAllBytes(bnmTemplatePath));
-
-                // Map files in the folder to the internal SoundFile names
-                // We use a Dictionary<InternalName, FullPathToWav>
                 var replacements = new Dictionary<string, string>();
                 string[] filesInFolder = Directory.GetFiles(wavFolder, "*.wav");
 
                 foreach (var sound in bnm.soundFiles)
                 {
-                    // Look for the exact name or the indexed name (e.g., "0_sound.WAV")
                     string exactMatch = Path.Combine(wavFolder, sound.name);
                     if (File.Exists(exactMatch))
                     {
                         replacements[sound.name] = exactMatch;
                     } else
                     {
-                        // Search for indexed versions (e.g., 0_name.wav, 1_name.wav)
                         var indexedMatch = filesInFolder.FirstOrDefault(f =>
                             Path.GetFileName(f).Contains("_" + sound.name));
 
@@ -101,15 +91,14 @@ namespace BNKReader
                     }
                 }
 
-                // Generate the new binary data
                 byte[] resultData = bnm.SaveBNM(replacements);
                 File.WriteAllBytes(outputPath, resultData);
 
-                new MessageBoxForm($"Successfully repacked {replacements.Count} sounds to {outputPath}", "Success");
+                new MessageBoxForm($"Successfully repacked {replacements.Count} sounds to {outputPath}", "Success").ShowDialog(this);
             } catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                new MessageBoxForm($"Error during repacking: {ex.Message}", "Error");
+                new MessageBoxForm($"Error during repacking: {ex.Message}", "Error").ShowDialog(this);
             }
         }
 
