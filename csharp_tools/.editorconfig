@@ -1,0 +1,20 @@
+
+[*]
+
+# Microsoft .NET properties
+csharp_indent_braces = false
+csharp_new_line_before_open_brace = anonymous_methods,control_blocks,events,indexers,lambdas,local_functions,methods,properties,types
+csharp_preferred_modifier_order = protected, internal, public, private, file, static, abstract, override, new, sealed, safe, extern, virtual, closed, async, unsafe, volatile, required, readonly:suggestion
+csharp_style_namespace_declarations = block_scoped:suggestion
+csharp_style_var_for_built_in_types = false:suggestion
+dotnet_style_require_accessibility_modifiers = omit_if_default:suggestion
+
+# ReSharper properties
+resharper_blank_lines_after_control_transfer_statements = 1
+resharper_blank_lines_after_start_comment = 0
+resharper_blank_lines_around_invocable = 1
+resharper_braces_for_for = not_required
+resharper_indent_nested_for_stmt = true
+resharper_new_line_before_while = true
+resharper_object_creation_when_type_evident = explicitly_typed
+resharper_place_type_attribute_on_same_line = true

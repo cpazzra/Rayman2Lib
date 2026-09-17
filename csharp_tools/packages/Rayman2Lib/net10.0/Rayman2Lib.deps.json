@@ -1,0 +1,426 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v10.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v10.0": {
+      "Rayman2Lib/1.0.0": {
+        "dependencies": {
+          "Modern.Forms": "0.3.0",
+          "System.Drawing.Common": "10.0.12",
+          "System.Resources.Extensions": "10.0.12",
+          "System.Windows.Extensions": "10.0.12"
+        },
+        "runtime": {
+          "Rayman2Lib.dll": {}
+        }
+      },
+      "HarfBuzzSharp/2.8.2.1": {
+        "dependencies": {
+          "HarfBuzzSharp.NativeAssets.Win32": "2.8.2.1",
+          "HarfBuzzSharp.NativeAssets.macOS": "2.8.2.1"
+        },
+        "runtime": {
+          "lib/net6.0/HarfBuzzSharp.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "2.8.2.1"
+          }
+        }
+      },
+      "HarfBuzzSharp.NativeAssets.Linux/2.8.2.1": {
+        "dependencies": {
+          "HarfBuzzSharp": "2.8.2.1"
+        },
+        "runtimeTargets": {
+          "runtimes/linux-arm/native/libHarfBuzzSharp.so": {
+            "rid": "linux-arm",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/linux-arm64/native/libHarfBuzzSharp.so": {
+            "rid": "linux-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/linux-musl-x64/native/libHarfBuzzSharp.so": {
+            "rid": "linux-musl-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/linux-x64/native/libHarfBuzzSharp.so": {
+            "rid": "linux-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "HarfBuzzSharp.NativeAssets.macOS/2.8.2.1": {
+        "runtimeTargets": {
+          "runtimes/osx/native/libHarfBuzzSharp.dylib": {
+            "rid": "osx",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "HarfBuzzSharp.NativeAssets.Win32/2.8.2.1": {
+        "runtimeTargets": {
+          "runtimes/win-arm64/native/libHarfBuzzSharp.dll": {
+            "rid": "win-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/libHarfBuzzSharp.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x86/native/libHarfBuzzSharp.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "Microsoft.Win32.SystemEvents/10.0.12": {
+        "runtime": {
+          "lib/net10.0/Microsoft.Win32.SystemEvents.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.1226.42308"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/net10.0/Microsoft.Win32.SystemEvents.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.1226.42308"
+          }
+        }
+      },
+      "Modern.Forms/0.3.0": {
+        "dependencies": {
+          "HarfBuzzSharp": "2.8.2.1",
+          "HarfBuzzSharp.NativeAssets.Linux": "2.8.2.1",
+          "Modern.WindowKit": "0.1.2",
+          "Topten.RichTextKit": "0.4.151"
+        },
+        "runtime": {
+          "lib/net6.0/Modern.Forms.dll": {
+            "assemblyVersion": "0.3.0.0",
+            "fileVersion": "0.3.0.0"
+          }
+        }
+      },
+      "Modern.WindowKit/0.1.2": {
+        "dependencies": {
+          "Modern.WindowKit.Backend.Mac": "0.1.2",
+          "SkiaSharp": "2.88.2",
+          "SkiaSharp.NativeAssets.Linux": "2.88.2",
+          "System.Drawing.Common": "10.0.12"
+        },
+        "runtime": {
+          "lib/net6.0/Modern.WindowKit.dll": {
+            "assemblyVersion": "0.1.2.0",
+            "fileVersion": "0.1.2.0"
+          }
+        }
+      },
+      "Modern.WindowKit.Backend.Mac/0.1.2": {
+        "runtime": {
+          "lib/net6.0/Modern.WindowKit.Backend.Mac.dll": {
+            "assemblyVersion": "0.1.2.0",
+            "fileVersion": "0.1.2.0"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/osx/native/libAvaloniaNative.dylib": {
+            "rid": "osx",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "SkiaSharp/2.88.2": {
+        "dependencies": {
+          "SkiaSharp.NativeAssets.Win32": "2.88.2",
+          "SkiaSharp.NativeAssets.macOS": "2.88.2"
+        },
+        "runtime": {
+          "lib/net6.0/SkiaSharp.dll": {
+            "assemblyVersion": "2.88.0.0",
+            "fileVersion": "2.88.2.0"
+          }
+        }
+      },
+      "SkiaSharp.HarfBuzz/2.80.2": {
+        "dependencies": {
+          "HarfBuzzSharp": "2.8.2.1",
+          "SkiaSharp": "2.88.2"
+        },
+        "runtime": {
+          "lib/netstandard2.0/SkiaSharp.HarfBuzz.dll": {
+            "assemblyVersion": "2.80.0.0",
+            "fileVersion": "2.80.2.0"
+          }
+        }
+      },
+      "SkiaSharp.NativeAssets.Linux/2.88.2": {
+        "dependencies": {
+          "SkiaSharp": "2.88.2"
+        },
+        "runtimeTargets": {
+          "runtimes/linux-arm/native/libSkiaSharp.so": {
+            "rid": "linux-arm",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/linux-arm64/native/libSkiaSharp.so": {
+            "rid": "linux-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/linux-musl-x64/native/libSkiaSharp.so": {
+            "rid": "linux-musl-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/linux-x64/native/libSkiaSharp.so": {
+            "rid": "linux-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "SkiaSharp.NativeAssets.macOS/2.88.2": {
+        "runtimeTargets": {
+          "runtimes/osx/native/libSkiaSharp.dylib": {
+            "rid": "osx",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "SkiaSharp.NativeAssets.Win32/2.88.2": {
+        "runtimeTargets": {
+          "runtimes/win-arm64/native/libSkiaSharp.dll": {
+            "rid": "win-arm64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x64/native/libSkiaSharp.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          },
+          "runtimes/win-x86/native/libSkiaSharp.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "0.0.0.0"
+          }
+        }
+      },
+      "System.Drawing.Common/10.0.12": {
+        "dependencies": {
+          "Microsoft.Win32.SystemEvents": "10.0.12"
+        },
+        "runtime": {
+          "lib/net10.0/System.Drawing.Common.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.1226.42308"
+          },
+          "lib/net10.0/System.Private.Windows.Core.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.1226.42308"
+          },
+          "lib/net10.0/System.Private.Windows.GdiPlus.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.1226.42308"
+          }
+        }
+      },
+      "System.Formats.Nrbf/10.0.12": {
+        "runtime": {
+          "lib/net10.0/System.Formats.Nrbf.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.1226.42308"
+          }
+        }
+      },
+      "System.Resources.Extensions/10.0.12": {
+        "dependencies": {
+          "System.Formats.Nrbf": "10.0.12"
+        },
+        "runtime": {
+          "lib/net10.0/System.Resources.Extensions.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.1226.42308"
+          }
+        }
+      },
+      "System.Windows.Extensions/10.0.12": {
+        "runtime": {
+          "lib/net10.0/System.Windows.Extensions.dll": {
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.1226.42308"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win/lib/net10.0/System.Windows.Extensions.dll": {
+            "rid": "win",
+            "assetType": "runtime",
+            "assemblyVersion": "10.0.0.0",
+            "fileVersion": "10.0.1226.42308"
+          }
+        }
+      },
+      "Topten.RichTextKit/0.4.151": {
+        "dependencies": {
+          "SkiaSharp": "2.88.2",
+          "SkiaSharp.HarfBuzz": "2.80.2"
+        },
+        "runtime": {
+          "lib/net5.0/Topten.RichTextKit.dll": {
+            "assemblyVersion": "0.4.151.0",
+            "fileVersion": "0.4.151.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Rayman2Lib/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "HarfBuzzSharp/2.8.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-jWRM+/0xMi754qG9FxMB8UPmNOYJ4hauAsDOad/qi9c0xvgx8QN33y1DzHpyxINBunGFMIeRKtTWHw0GWYv28w==",
+      "path": "harfbuzzsharp/2.8.2.1",
+      "hashPath": "harfbuzzsharp.2.8.2.1.nupkg.sha512"
+    },
+    "HarfBuzzSharp.NativeAssets.Linux/2.8.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-AbWJCUsfXh/PbBG/DSAjd9tggXCRtaoL4/L9rAjtMab0voCgBWCD2dVdbxU7wM+rCHod1XolJ0gPHmMog8li/g==",
+      "path": "harfbuzzsharp.nativeassets.linux/2.8.2.1",
+      "hashPath": "harfbuzzsharp.nativeassets.linux.2.8.2.1.nupkg.sha512"
+    },
+    "HarfBuzzSharp.NativeAssets.macOS/2.8.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-0MPzzB3WESCpIsrnlz0e64q2fmPlM26wgXw4C0V3U+7ATOJrswNWbnu01i/goElosHJb9ML65zebJs4kobkVaw==",
+      "path": "harfbuzzsharp.nativeassets.macos/2.8.2.1",
+      "hashPath": "harfbuzzsharp.nativeassets.macos.2.8.2.1.nupkg.sha512"
+    },
+    "HarfBuzzSharp.NativeAssets.Win32/2.8.2.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-fiWnIGd0UAfB30SNJTPF75FLKnQKaWtehA4KdHBcjgUUCd2T724W5l2fzxbY0NFLlSg0tb9zT3ZzO2qvJ/jksg==",
+      "path": "harfbuzzsharp.nativeassets.win32/2.8.2.1",
+      "hashPath": "harfbuzzsharp.nativeassets.win32.2.8.2.1.nupkg.sha512"
+    },
+    "Microsoft.Win32.SystemEvents/10.0.12": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-kdj5cqOwgZCMltEhQ4+WVUoFkMHG08EJfy1MDyS9H+FBg66vTTFyX8YcNl8IQh5wRQv79P+iduQgDGY8ucBR+w==",
+      "path": "microsoft.win32.systemevents/10.0.12",
+      "hashPath": "microsoft.win32.systemevents.10.0.12.nupkg.sha512"
+    },
+    "Modern.Forms/0.3.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pqxkkFaUBoCiejdac3vlHpojW3K6APaPdx53C2es2NAmeDTjj3TdusUJ2ntcD9QgTXY9ukJrer5syReoIMA06A==",
+      "path": "modern.forms/0.3.0",
+      "hashPath": "modern.forms.0.3.0.nupkg.sha512"
+    },
+    "Modern.WindowKit/0.1.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-yB+Tr/xu0Bo4RGR1tamZg0QjDlUAJpHOJm+JICj6FseCNHhqNt+U91Ny+ioEGNsNHaUmF8IrBiIZvpBMyoiPJg==",
+      "path": "modern.windowkit/0.1.2",
+      "hashPath": "modern.windowkit.0.1.2.nupkg.sha512"
+    },
+    "Modern.WindowKit.Backend.Mac/0.1.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Oci9FicwdSbR0xtIANzrYT3L5WYsjKac4zxm3Isek8Dq5HVxeSVNo47Po9ntTgJTnlZvNET7DlAyQ63Rn8txlA==",
+      "path": "modern.windowkit.backend.mac/0.1.2",
+      "hashPath": "modern.windowkit.backend.mac.0.1.2.nupkg.sha512"
+    },
+    "SkiaSharp/2.88.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-B7ToGj6WO4K4iEtD1Lydrt5FARxMNbNjnlEa4M2TaKs3EM0cmZLrJjCaZvfOJL9gXkswJb5pTSJL9Qz9AHd+Jw==",
+      "path": "skiasharp/2.88.2",
+      "hashPath": "skiasharp.2.88.2.nupkg.sha512"
+    },
+    "SkiaSharp.HarfBuzz/2.80.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-CakjlLUm22f4qy0WEyGVAqNuewgJre1qyUqEpg2Vi6jwEnTE42aCG607CL+i9LvSjdOdKOh/Dm6hESuLPYoTbw==",
+      "path": "skiasharp.harfbuzz/2.80.2",
+      "hashPath": "skiasharp.harfbuzz.2.80.2.nupkg.sha512"
+    },
+    "SkiaSharp.NativeAssets.Linux/2.88.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-tklk0wV0ssJdoYAmKZGGGhn/KRL2MYoXPGG9hA/9rwPw0sK8fF30HdRAvD69YcpJpzgUlLe52p3wd/ExdMq4ZA==",
+      "path": "skiasharp.nativeassets.linux/2.88.2",
+      "hashPath": "skiasharp.nativeassets.linux.2.88.2.nupkg.sha512"
+    },
+    "SkiaSharp.NativeAssets.macOS/2.88.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-mUtY9w9KP6LnhE3VgwE331ttOclx239MENCo1aPT27AJX6QkDpeeqSK83/Rggu3NYPkUwIdg6fU1MOBdv2as4A==",
+      "path": "skiasharp.nativeassets.macos/2.88.2",
+      "hashPath": "skiasharp.nativeassets.macos.2.88.2.nupkg.sha512"
+    },
+    "SkiaSharp.NativeAssets.Win32/2.88.2": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-FgUHWpnfLcFiqAXuJEgcvUn5p7gHwkkfclWFU8LKfydUzwJyq+izWxL5OCVgbB8wYrX/TSx42uh8LwstEAURzw==",
+      "path": "skiasharp.nativeassets.win32/2.88.2",
+      "hashPath": "skiasharp.nativeassets.win32.2.88.2.nupkg.sha512"
+    },
+    "System.Drawing.Common/10.0.12": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-FBUxiucg2gsnyItbpGgyXI5u8FYLcqdLKS1XJkHHTj3RK1c6kpsJr/Y9i4edUNF7LqCYFrHqpHEvpt8/lNBe9w==",
+      "path": "system.drawing.common/10.0.12",
+      "hashPath": "system.drawing.common.10.0.12.nupkg.sha512"
+    },
+    "System.Formats.Nrbf/10.0.12": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-J7c0zqHgdUIrzXU8ko5ft5McUBK6AI0Dcgav6QvGcFvbB21trihIrxYAXMv3tEdkmVqJwow1RXWtoZ9aO95umw==",
+      "path": "system.formats.nrbf/10.0.12",
+      "hashPath": "system.formats.nrbf.10.0.12.nupkg.sha512"
+    },
+    "System.Resources.Extensions/10.0.12": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-g+md0uklu5Zmm9DxgMOobKRheIZIDfmxhe7RN9PTnr1PiozfV7+4yQSqdL3Xa8Sv8fr6GGr2UJrd4C3gjQs7/w==",
+      "path": "system.resources.extensions/10.0.12",
+      "hashPath": "system.resources.extensions.10.0.12.nupkg.sha512"
+    },
+    "System.Windows.Extensions/10.0.12": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-J+FZruVjELSk2NMe3MQNyCXszIlx1b7qOjUBCSbhabomYIVWpFS5QCnPdxE8K6SVt7Gja7ohpXX1oLLXRAIuzw==",
+      "path": "system.windows.extensions/10.0.12",
+      "hashPath": "system.windows.extensions.10.0.12.nupkg.sha512"
+    },
+    "Topten.RichTextKit/0.4.151": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-xaqnGzJPhD/hMk4yfgsDXlQSrhsUH6dJcisXA1qtGlOyB61v4Dt/RGSOA8L5ENqUPf5tmHM7aFzoNG4u+OTKfA==",
+      "path": "topten.richtextkit/0.4.151",
+      "hashPath": "topten.richtextkit.0.4.151.nupkg.sha512"
+    }
+  }
+}

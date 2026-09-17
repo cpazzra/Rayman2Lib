@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-
+﻿using System.Text;
 namespace Rayman2Lib
 {
     public class BNMFile
@@ -17,9 +10,14 @@ namespace Rayman2Lib
             public int length;
             public byte[] data;
 
+            public int fileListOffset;
+            public int lengthFieldOffset;
+
             public void Save(Stream stream)
             {
+                // Oftens shows as 22.1khz in OS descriptions 
                 uint numsamples = 22050;
+                // Mono audio
                 ushort numchannels = 1;
                 ushort samplelength = 1;
 
@@ -28,8 +26,10 @@ namespace Rayman2Lib
                 wr.Write(Encoding.ASCII.GetBytes("RIFF"));
                 wr.Write(36 + data.Length);
                 wr.Write(Encoding.ASCII.GetBytes("WAVEfmt "));
+                // 16-bit pcm formatting (default for audacity)
                 wr.Write(16);
                 wr.Write((ushort)1);
+
                 wr.Write(numchannels);
                 wr.Write(sampleRate);
                 wr.Write(sampleRate * samplelength * numchannels);
@@ -42,136 +42,197 @@ namespace Rayman2Lib
             }
         }
 
-        byte[] data;
-
-        int dataPos = 0;
-        public List<SoundFile> soundFiles = new List<SoundFile>();
+        readonly byte[] header;
+        readonly byte[] fileList;
+        public List<SoundFile> soundFiles = [];
 
         public BNMFile(byte[] data)
         {
-            this.data = data;
+            using var stream = new MemoryStream(data);
+            using var r = new BinaryReader(stream);
 
-            var stream = new MemoryStream(data);
-            var r = new BinaryReader(stream);
+            header = r.ReadBytes(44);
 
-            // Header
-            var field_0 = r.ReadInt32();
-            var field_4 = r.ReadInt32();
-            var eventCount = r.ReadInt32();
-            var field_C = r.ReadInt32();
-            var field_10 = r.ReadInt32();
-            var size1 = r.ReadInt32();
-            var size2 = r.ReadInt32();
-            var field_1C = r.ReadInt32();
-            var field_20 = r.ReadInt32();
-            var field_24 = r.ReadInt32();
-            var field_28 = r.ReadInt32();
+            int eventCount = BitConverter.ToInt32(header, 8);
+            int fileCount = BitConverter.ToInt32(header, 16);
+            int fileListEndOffset = BitConverter.ToInt32(header, 20);
+            int audioDataOffset = BitConverter.ToInt32(header, 24);
 
-            var fileList = r.ReadBytes(size1 - 44);
-
-            if (size2 - size1 > 0)
-                r.ReadBytes(size2 - size1);
-
-            dataPos = (int)r.BaseStream.Position;
-
-            if (size2 > 0)
+            int dataPos = fileListEndOffset;
+            if (audioDataOffset - fileListEndOffset > 0)
             {
-                r.ReadBytes(size2);
+                stream.Seek(audioDataOffset, SeekOrigin.Begin);
+            } else
+            {
+                stream.Seek(dataPos, SeekOrigin.Begin);
             }
 
-            var size3 = field_20 - field_1C;
-
-            if (size3 > 0)
-            {
-                byte[] dataPart = r.ReadBytes(size3);
-            }
-
-            // Read file list
-
-            var mr = new BinaryReader(new MemoryStream(fileList));
+            fileList = r.ReadBytes(fileListEndOffset - 44);
+            using var mr = new BinaryReader(new MemoryStream(fileList));
 
             if (eventCount > 0)
             {
-                for (int i = 0; i < eventCount; i++)
-                {
-                    // TODO: Read binary events
-                    mr.ReadBytes(32);
-                }
-                if (field_10 > 0)
-                {
-                    r.BaseStream.Seek(dataPos, SeekOrigin.Begin);
+                for (int i = 0; i < eventCount; i++) mr.ReadBytes(32);
+            }
 
-                    // Here begin file names
-                    for (int i = 0; i < field_10; i++)
+            if (fileCount > 0)
+            {
+                for (int i = 0; i < fileCount; i++)
+                {
+                    int currentEntryOffset = (int)mr.BaseStream.Position;
+
+                    var id = mr.ReadByte();
+                    mr.ReadBytes(3); // someValue 1-3
+                    int type = mr.ReadInt32();
+                    mr.ReadBytes(4); // someValue 4-7
+
+                    int lengthOffset = (int)mr.BaseStream.Position;
+                    int length = mr.ReadInt32();
+
+                    if (type == 0xA)
                     {
-                        //MessageBox.Show("Offset: " + stream.Position.ToString("X8"));
-                        var id = mr.ReadByte();
-                        var someValue1 = mr.ReadByte();
-                        var someValue2 = mr.ReadByte();
-                        var someValue3 = mr.ReadByte();
-                        int type = mr.ReadInt32();
-                        var someValue4 = mr.ReadByte();
-                        var someValue5 = mr.ReadByte();
-                        var someValue6 = mr.ReadByte();
-                        var someValue7 = mr.ReadByte();
-                        var length = mr.ReadInt32();
-                        if (type == 0xA)
-                        {
-                            length = mr.ReadInt32();
-                            mr.ReadBytes(40);
-                        }
-                        else if (type != 1)
-                        {
-                            //MessageBox.Show("weird type " + type.ToString("X") + " " + i);
-                            mr.ReadBytes(44);
-                        }
-                        else
-                            mr.ReadBytes(44);
-                        var sampleRate = mr.ReadInt32();
-                        var someBytes = mr.ReadBytes(8);
-                        //MessageBox.Show((44 + r.BaseStream.Position).ToString());
-                        var name = Encoding.ASCII.GetString(mr.ReadBytes(20));
-                        name = name.Substring(0, name.IndexOf((char)0x00));
-                        if (name.Length == 0)
-                            name = "UNKNOWN_TYPE";
-                        if (name.IndexOf(".apm") != -1)
-                            length = 0;
+                        length = mr.ReadInt32();
+                        mr.ReadBytes(40);
+                    } else
+                    {
+                        mr.ReadBytes(44);
+                    }
 
-                        if (type != 1 || soundFiles.Any(f => f.name == name))
-                            continue;
+                    var sampleRate = mr.ReadInt32();
+                    mr.ReadBytes(8);
+                    var nameBytes = mr.ReadBytes(20);
+                    var name = Encoding.ASCII.GetString(nameBytes).Split('\0')[0];
 
-                        //MessageBox.Show(name + " " + (44 + mr.BaseStream.Position - 92).ToString());
+                    if (name.Length == 0) name = "UNKNOWN_TYPE";
+                    if (name.Contains(".apm")) length = 0;
 
-                        soundFiles.Add(new SoundFile()
-                        {
+                    if (type == 1 && !soundFiles.Any(f => f.name == name))
+                    {
+                        soundFiles.Add(new SoundFile {
                             name = name,
                             sampleRate = sampleRate,
                             length = length,
+                            fileListOffset = currentEntryOffset,
+                            lengthFieldOffset = lengthOffset,
                             data = r.ReadBytes(length)
                         });
-
-                        if (name.IndexOf("ry_globo") != -1)
-                        {
-                            var builder = new StringBuilder();
-
-                            builder.AppendLine("Id:" + id.ToString("X8"));
-                            builder.AppendLine("someValue1:" + someValue1.ToString("X8"));
-                            builder.AppendLine("someValue2:" + someValue2.ToString("X8"));
-                            builder.AppendLine("someValue3:" + someValue3.ToString("X8"));
-                            builder.AppendLine("someValue4:" + someValue4.ToString("X8"));
-                            builder.AppendLine("someValue5:" + someValue5.ToString("X8"));
-                            builder.AppendLine("someValue6:" + someValue6.ToString("X8"));
-                            builder.AppendLine("someValue7:" + someValue7.ToString("X8"));
-                            builder.AppendLine("someBytes:" + someBytes.Select(b => b.ToString("X2")).Aggregate((a, b) => a + " " + b));
-
-                            MessageBox.Show(builder.ToString());
-                        }
                     }
-                    //MessageBox.Show((44 + mr.BaseStream.Position).ToString());
                 }
             }
-
-            r.Close();
         }
+
+        /// <summary>
+        /// Rebuilds the BNM file. A lot of these details were gleamed from trying to clean up the original extraction logic.
+        /// This attempts to reverse that.
+        /// TODO: Odds are, does not account for .apm files. Likely requires extra parsing to get working correctly.
+        /// </summary>
+        /// <param name="replacementFiles">A dictionary that maps the source file name to it's replacement in the filesystem.</param>
+        /// <returns></returns>
+        public byte[] SaveBNM(Dictionary<string, string?> replacementFiles = null)
+        {
+            var updatedFileList = (byte[])fileList.Clone();
+            var audioDataStream = new MemoryStream();
+
+            foreach (var sound in soundFiles)
+            {
+                byte[] finalData = sound.data;
+
+                if (replacementFiles != null &&
+                    replacementFiles.TryGetValue(sound.name, out string? wavPath))
+                {
+                    finalData = ExtractRawPCMDataFromWAV(wavPath);
+                    Console.WriteLine($"Replacement: {wavPath}, extracted {finalData.Length} bytes");
+                }
+
+                Console.WriteLine($"BNM entry: {sound.name}, original {sound.data.Length} bytes, final {finalData.Length} bytes");
+
+                byte[] lenBytes = BitConverter.GetBytes(finalData.Length);
+                Buffer.BlockCopy(lenBytes, 0, updatedFileList, sound.lengthFieldOffset, 4);
+                audioDataStream.Write(finalData, 0, finalData.Length);
+            }
+
+            // Update Header size fields
+            byte[] updatedHeader = (byte[])header.Clone();
+
+            int fileListEnd = 44 + updatedFileList.Length;
+            int audioLength = checked((int)audioDataStream.Length);
+            int totalSize = fileListEnd + (int)audioDataStream.Length;
+
+            // Header offset 20: end of file-list section
+            Buffer.BlockCopy(
+                BitConverter.GetBytes(fileListEnd),
+                0,
+                updatedHeader,
+                20,
+                4);
+
+            // Header offset 24: audio-data start offset(?)
+            Buffer.BlockCopy(
+                BitConverter.GetBytes(fileListEnd),
+                0,
+                updatedHeader,
+                24,
+                4);
+
+            using var finalStream = new MemoryStream();
+            finalStream.Write(updatedHeader, 0, updatedHeader.Length);
+            finalStream.Write(updatedFileList, 0, updatedFileList.Length);
+            finalStream.Write(audioDataStream.ToArray(), 0, (int)audioDataStream.Length);
+
+            Console.WriteLine($"File-list end: {fileListEnd}");
+            Console.WriteLine($"Audio length: {audioLength}");
+            Console.WriteLine($"Total size: {totalSize}");
+
+            return finalStream.ToArray();
+        }
+
+        /// <summary>
+        /// Handles data extraction from a provided WAV file.
+        /// Makes use of binary file structure documented here: https://docs.fileformat.com/audio/wav/ 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidDataException"></exception>
+        private static byte[] ExtractRawPCMDataFromWAV(string path)
+        {
+            using var fs = File.OpenRead(path);
+            using var reader = new BinaryReader(fs, Encoding.ASCII, leaveOpen: false);
+
+            // Don't understand details of this header completely, but need to skip over when parsing WAV file.
+            // Perform checks on wav header anyway.
+            string riffId = Encoding.ASCII.GetString(reader.ReadBytes(4));
+            if (riffId != "RIFF")
+            {
+                throw new InvalidDataException("WAV missing root chunk.");
+            }
+
+            string waveId = Encoding.ASCII.GetString(reader.ReadBytes(4));
+            if (waveId != "WAVE")
+            {
+                throw new InvalidDataException("WAV missing RIFF type");
+            }
+
+            while (fs.Position + 8 <= fs.Length)
+            {
+                string chunkId = Encoding.ASCII.GetString(reader.ReadBytes(4));
+                uint chunkSize = reader.ReadUInt32();
+
+                if (chunkSize > fs.Length - fs.Position)
+                {
+                    throw new InvalidDataException($"Invalid {chunkId} chunk size: {chunkSize}.");
+                }
+
+                // Actual PCM data chunk
+                if (chunkId == "data")
+                {
+                    return reader.ReadBytes(checked((int)chunkSize));
+                }
+                // Skip a padding byte for odd sizes
+                fs.Seek(chunkSize + (chunkSize & 1), SeekOrigin.Current);
+            }
+
+            throw new InvalidDataException("No data chunk found in WAV file.");
+        }
+
     }
 }
