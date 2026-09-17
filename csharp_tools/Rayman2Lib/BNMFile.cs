@@ -122,10 +122,12 @@ namespace Rayman2Lib
         }
 
         /// <summary>
-        /// Rebuilds the BNM file. 
-        /// replacementFiles: Dictionary where key is sound name and value is path to replacement .wav
+        /// Rebuilds the BNM file. A lot of these details were gleamed from trying to clean up the original extraction logic.
+        /// This attempts to reverse that.
         /// TODO: Odds are, does not account for .apm files. Likely requires extra parsing to get working correctly.
         /// </summary>
+        /// <param name="replacementFiles">A dictionary that maps the source file name to it's replacement in the filesystem.</param>
+        /// <returns></returns>
         public byte[] SaveBNM(Dictionary<string, string?> replacementFiles = null)
         {
             var updatedFileList = (byte[])fileList.Clone();
@@ -164,7 +166,7 @@ namespace Rayman2Lib
                 20,
                 4);
 
-            // Header offset 24: audio-data start offset, according to your extractor
+            // Header offset 24: audio-data start offset(?)
             Buffer.BlockCopy(
                 BitConverter.GetBytes(fileListEnd),
                 0,
@@ -184,6 +186,13 @@ namespace Rayman2Lib
             return finalStream.ToArray();
         }
 
+        /// <summary>
+        /// Handles data extraction from a provided WAV file.
+        /// Makes use of binary file structure documented here: https://docs.fileformat.com/audio/wav/ 
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        /// <exception cref="InvalidDataException"></exception>
         private static byte[] ExtractRawPCMDataFromWAV(string path)
         {
             using var fs = File.OpenRead(path);
